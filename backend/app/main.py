@@ -1,4 +1,11 @@
 import os
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,8 +19,6 @@ from app.api.prediction import router as prediction_router
 from app.api.explainability import router as explainability_router
 from app.api.dashboard import router as dashboard_router
 from app.api.results import router as results_router
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -65,3 +70,9 @@ def root():
 @app.get("/api/health")
 def health_check():
     return {"status": "healthy", "service": "heart-disease-analytics-backend"}
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=port, reload=False)
+

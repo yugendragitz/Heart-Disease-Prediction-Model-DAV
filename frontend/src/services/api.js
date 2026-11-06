@@ -1,6 +1,6 @@
 // API client service connecting React frontend to FastAPI backend
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '') + '/api';
 
 export async function fetchDatasets() {
   const res = await fetch(`${API_BASE}/datasets`);
